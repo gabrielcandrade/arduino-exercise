@@ -1,0 +1,71 @@
+const int emissor = 7;
+const int emissorTwo = 4;
+const int receptor = 8;
+const int receptorTwo = 13;
+
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(emissor, OUTPUT);
+  pinMode(emissorTwo, OUTPUT);
+  pinMode(receptor, INPUT);
+  pinMode(receptorTwo, INPUT);
+
+}
+
+void loop()
+{
+  long duration, inches, cm, inchesTwo, cmTwo, durationTwo;
+
+  digitalWrite(emissor, LOW);
+  digitalWrite(emissorTwo, LOW);
+  delayMicroseconds(2);
+  digitalWrite(emissor, HIGH);
+  digitalWrite(emissorTwo, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(emissor, LOW);
+  digitalWrite(emissorTwo, LOW);
+
+  //o receptor faz a leitura do estado do pino e se retorna HIGH ele informa
+  duration = pulseIn(receptor, HIGH);
+  durationTwo = pulseIn(receptorTwo, HIGH);
+
+  // converte a distância
+  inches = microsecondsToInches(duration);
+  inchesTwo = microsecondsToInches(durationTwo);
+  cm = microsecondsToCentimeters(duration);
+  cmTwo = microsecondsToCentimeters(durationTwo);
+
+  Serial.print("Primeiro sensor: ");
+  Serial.print(inches);
+  Serial.print("in, ");
+  Serial.print(cm);
+  Serial.print("cm,");
+  Serial.println();
+  
+  Serial.print("Segundo sensor: ");
+  Serial.print(inchesTwo);
+  Serial.print("in, ");
+  Serial.print(cmTwo);
+  Serial.print("cm,");
+  Serial.println();
+  
+  //Se os dois sensores tiver menos de 30 inch, acende o led.
+  if(inches < 30)
+  {
+    if (inchesTwo < 30)
+    {
+      digitalWrite(10, HIGH); //liga o LED
+    }
+  }
+}
+
+long microsecondsToInches(long microseconds)
+{
+  return microseconds / 74 / 2;
+}
+
+long microsecondsToCentimeters(long microseconds)
+{
+  return microseconds / 29 / 2;
+}
